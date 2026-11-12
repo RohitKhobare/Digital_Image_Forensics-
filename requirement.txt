@@ -6,3 +6,4 @@ PyWavelets
 numpy
 progressbar2
 matplotlib
+streamlit

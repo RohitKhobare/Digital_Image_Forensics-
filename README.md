@@ -1,9 +1,8 @@
 # Digital Image Forensics
 
-A Python command-line utility for examining JPEG images with several traditional
-digital image forensics techniques. It prints image metadata or displays
-side-by-side visual analysis results to help an investigator identify areas
-that may warrant closer inspection.
+A Python project for examining JPEG images with several traditional digital
+image forensics techniques. Use the command-line utility or the Streamlit web
+interface to inspect image metadata and view side-by-side analysis results.
 
 > **Important:** These techniques are indicators, not proof that an image is
 > authentic or manipulated. Results can be affected by image content,
@@ -24,9 +23,9 @@ The program is implemented in [`foreimg.py`](./foreimg.py) and supports:
 | Error Level Analysis (ELA) | `-el`, `--ela` | Displays the difference between the source and a JPEG re-saved at a selected quality. |
 | Demosaicing/CFA artifacts | `-cf`, `--cfa` | Displays a block-based analysis map based on candidate color filter array patterns. |
 
-Analysis images are shown in a Matplotlib window; they are not saved as result
-files. JPEG Ghost and ELA temporarily create a re-saved JPEG in the current
-working directory and remove it after the plot window is closed.
+The CLI displays analysis images in a Matplotlib window. The web interface
+renders those maps in the browser. Analysis maps and EXIF reports are not
+exported as files.
 
 ## Requirements
 
@@ -40,6 +39,7 @@ working directory and remove it after the plot window is closed.
   - NumPy
   - progressbar2
   - Matplotlib
+  - Streamlit (web interface)
 
 The program accepts files with `.jpg` or `.jpeg` extensions. A working
 graphical display is needed for the analysis modes that show plots.
@@ -69,6 +69,42 @@ python -m pip install -r requirement.txt
 
 The repository also includes `install_packet.sh`, a Bash script that installs
 the packages from `requirement.txt` with `pip`.
+
+## Web interface
+
+Run the browser interface locally from the project directory:
+
+```bash
+python -m streamlit run streamlit_app.py
+```
+
+Streamlit prints a local URL (usually `http://localhost:8501`). Select an
+analysis method, upload a JPEG, set optional parameters where shown, and click
+**Analyze image**.
+
+The web interface accepts JPEG files up to 20 MB and 8 megapixels. CFA
+demosaicing analysis is restricted to images of 1 megapixel or less because
+that algorithm uses substantially more memory. Uploaded images are handled
+using temporary files and are removed after the analysis request; deployment
+platforms may apply their own logging, cache, or data-retention policies.
+
+## Deployment on Streamlit Community Cloud
+
+The Python CLI cannot run as a GitHub Pages site: GitHub Pages hosts static
+content and does not execute Python applications. The Streamlit interface in
+[`streamlit_app.py`](./streamlit_app.py) can be hosted on Streamlit Community
+Cloud using this GitHub repository:
+
+1. Sign in to [Streamlit Community Cloud](https://share.streamlit.io/) with
+   GitHub and authorize access to this repository.
+2. Choose **Create app** and select `RohitKhobare/Digital_Image_Forensics-`,
+   branch `main`, and main file path `streamlit_app.py`.
+3. Deploy the app. Streamlit installs the dependencies from
+   [`requirement.txt`](./requirement.txt) and provides the public app URL.
+
+The hosted app URL is not included here yet; it must be created from an
+authorized Streamlit Community Cloud account. If deployment fails, check the
+app's build and runtime logs in Streamlit Cloud.
 
 ## Usage
 
@@ -136,6 +172,7 @@ method-specific valid range.
 | File | Purpose |
 | --- | --- |
 | `foreimg.py` | Command-line entry point and implementations of metadata, JPEG Ghost, noise, ELA, and CFA analyses. |
+| `streamlit_app.py` | Streamlit browser UI for uploading JPEGs and running the forensic analyses. |
 | `requirement.txt` | Python dependency list used by pip. |
 | `install_packet.sh` | Bash dependency installation helper. |
 | `exif1.jpg`, `exif2.jpg`, `exif3.jpg` | Sample JPEGs for EXIF inspection. |
@@ -149,4 +186,6 @@ method-specific valid range.
 - Output is visual or printed metadata; the current CLI does not export reports
   or analysis maps.
 - Input is limited by the program to JPEG filename extensions.
+- The web interface imposes upload and image-dimension limits to control
+  memory use; CFA analysis has a lower pixel limit.
 - There is no automated test suite included in the project.

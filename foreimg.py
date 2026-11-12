@@ -292,7 +292,7 @@ def check_author_copyright(info):
 ##################################
 
 
-def jpeg_ghost_multiple(file_path):
+def jpeg_ghost_multiple(file_path, show_plot=True):
 
     print("Analyzing...")
     bar = progressbar.ProgressBar(maxval=20,
@@ -319,7 +319,7 @@ def jpeg_ghost_multiple(file_path):
     # Get the name of the image
     base = basename(file_path)
     file_name = os.path.splitext(base)[0]
-    save_file_name = file_name+"_temp.jpg"
+    save_file_name = os.path.splitext(file_path)[0] + "_temp.jpg"
     bar.update(1)
 
     # Try 19 different qualities
@@ -364,11 +364,14 @@ def jpeg_ghost_multiple(file_path):
     bar.finish()
     print("Done")
     plt.suptitle('Exposing digital forgeries by JPEG Ghost')
-    plt.show()
+    fig = plt.gcf()
+    if show_plot:
+        plt.show()
     os.remove(save_file_name)
+    return None if show_plot else fig
 
 
-def jpeg_ghost(file_path, quality):
+def jpeg_ghost(file_path, quality, show_plot=True):
 
     print("Analyzing...")
     bar = progressbar.ProgressBar(maxval=20,
@@ -396,7 +399,7 @@ def jpeg_ghost(file_path, quality):
     # Get the name of the image
     base = basename(file_path)
     file_name = os.path.splitext(base)[0]
-    save_file_name = file_name+"_temp.jpg"
+    save_file_name = os.path.splitext(file_path)[0] + "_temp.jpg"
     bar.update(1)
 
     # Resaved the image with the new quality
@@ -436,8 +439,11 @@ def jpeg_ghost(file_path, quality):
     bar.finish()
     print("Done")
     plt.suptitle('Exposing digital forgeries by JPEG Ghost')
-    plt.show()
+    fig = plt.gcf()
+    if show_plot:
+        plt.show()
     os.remove(save_file_name)
+    return None if show_plot else fig
 
 #########################################################################
 #############################################
@@ -445,7 +451,7 @@ def jpeg_ghost(file_path, quality):
 #############################################
 
 
-def noise_inconsistencies(file_path, block_size):
+def noise_inconsistencies(file_path, block_size, show_plot=True):
 
     print("Analyzing...")
     bar = progressbar.ProgressBar(maxval=20,
@@ -491,7 +497,10 @@ def noise_inconsistencies(file_path, block_size):
     plt.subplot(1, 2, 2), plt.imshow(noise_map), plt.title('Analysis')
     plt.xticks([]), plt.yticks([])
     plt.suptitle('Exposing digital forgeries by using Noise Inconsistencies')
-    plt.show()
+    fig = plt.gcf()
+    if show_plot:
+        plt.show()
+    return None if show_plot else fig
 
 #########################################################################
 ###################################################################
@@ -499,7 +508,7 @@ def noise_inconsistencies(file_path, block_size):
 ###################################################################
 
 
-def median_noise_inconsistencies(file_path, n_size):
+def median_noise_inconsistencies(file_path, n_size, show_plot=True):
     print("Analyzing...")
     bar = progressbar.ProgressBar(maxval=20,
                                   widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -534,7 +543,10 @@ def median_noise_inconsistencies(file_path, n_size):
     plt.xticks([]), plt.yticks([])
     plt.suptitle(
         'Exposing digital forgeries by using Median-filter noise residue inconsistencies')
-    plt.show()
+    fig = plt.gcf()
+    if show_plot:
+        plt.show()
+    return None if show_plot else fig
 
 #########################################################################
 ############################################
@@ -542,7 +554,7 @@ def median_noise_inconsistencies(file_path, n_size):
 ############################################
 
 
-def ela(file_path, quality, block_size):
+def ela(file_path, quality, block_size, show_plot=True):
     print("Analyzing...")
     bar = progressbar.ProgressBar(maxval=20,
                                   widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -555,7 +567,7 @@ def ela(file_path, quality, block_size):
     # Get the name of the image
     base = basename(file_path)
     file_name = os.path.splitext(base)[0]
-    save_file_name = file_name+"_temp.jpg"
+    save_file_name = os.path.splitext(file_path)[0] + "_temp.jpg"
 
     if quality == None:
         quality = 90
@@ -588,15 +600,18 @@ def ela(file_path, quality, block_size):
     plt.subplot(1, 2, 2), plt.imshow(ela_map), plt.title('Analysis')
     plt.xticks([]), plt.yticks([])
     plt.suptitle('Exposing digital forgeries by using Error Level Analysis')
-    plt.show()
+    fig = plt.gcf()
+    if show_plot:
+        plt.show()
     os.remove(save_file_name)
+    return None if show_plot else fig
 
 
 #########################################################################
 ##################################################
 #### Functions based on demosaicing artifacts ####
 ##################################################
-def cfa_tamper_detection(file_path):
+def cfa_tamper_detection(file_path, show_plot=True):
     print("Analyzing...")
     bar = progressbar.ProgressBar(maxval=20,
                                   widgets=[progressbar.Bar('=', '[', ']'), ' ', progressbar.Percentage()])
@@ -724,7 +739,10 @@ def cfa_tamper_detection(file_path):
     plt.subplot(1, 2, 2), plt.imshow(F1Map), plt.title('Analysis')
     plt.xticks([]), plt.yticks([])
     plt.suptitle('Image tamper detection based on demosaicing artifacts')
-    plt.show()
+    fig = plt.gcf()
+    if show_plot:
+        plt.show()
+    return None if show_plot else fig
 
 
 def bilinInterolation(cfa_im, bin_filter, cfa):
